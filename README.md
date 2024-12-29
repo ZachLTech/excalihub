@@ -1,5 +1,0 @@
-# Excalihub
-
-## TODO
-
-- Make readme :)

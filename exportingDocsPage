@@ -1,0 +1,189 @@
+Export Utilities
+info
+We're working on much improved export utilities. Stay tuned!
+
+exportToCanvas
+Signature
+
+exportToCanvas({
+  elements,
+  appState
+  getDimensions,
+  files,
+  exportPadding?: number;
+}: ExportOpts
+Name	Type	Default	Description
+elements	Excalidraw Element []		The elements to be exported to canvas.
+appState	AppState	Default App State	The app state of the scene.
+getDimensions	function	_	A function which returns the width, height, and optionally scale (defaults to 1), with which canvas is to be exported.
+maxWidthOrHeight	number	_	The maximum width or height of the exported image. If provided, getDimensions is ignored.
+files	BinaryFiles	_	The files added to the scene.
+exportPadding	number	10	The padding to be added on canvas.
+getDimensions
+(width: number, height: number) => { 
+  width: number,
+  height: number, 
+  scale?: number 
+}
+
+A function which returns the width, height, and optionally scale (defaults to 1), with which canvas is to be exported.
+
+How to use
+
+import { exportToCanvas } from "@excalidraw/excalidraw";
+
+This function returns the canvas with the exported elements, appState and dimensions.
+
+Live Editor
+function App() {
+  const [canvasUrl, setCanvasUrl] = useState("");
+  const [excalidrawAPI, setExcalidrawAPI] = useState(null);
+
+  return  (
+    <>
+      <button
+        className="custom-button"
+        onClick={async () => {
+          if (!excalidrawAPI) {
+            return
+          }
+          const elements = excalidrawAPI.getSceneElements();
+          if (!elements || !elements.length) {
+            return
+          }
+          const canvas = await exportToCanvas({
+            elements,
+            appState: {
+              ...initialData.appState,
+              exportWithDarkMode: false,
+            },
+            files: excalidrawAPI.getFiles(),
+            getDimensions: () => { return {width: 350, height: 350}}
+          });
+          const ctx = canvas.getContext("2d");
+          ctx.font = "30px Virgil";
+          ctx.strokeText("My custom text", 50, 60);
+          setCanvasUrl(canvas.toDataURL());
+        }}
+      >
+        Export to Canvas
+      </button>
+      <div className="export export-canvas">
+        <img src={canvasUrl} alt="" />
+      </div>
+      <div style={{ height: "400px" }}>
+        <Excalidraw excalidrawAPI={(api) => setExcalidrawAPI(api)}
+/>
+      </div>
+    </>
+  )
+}
+function App() {
+  const [canvasUrl, setCanvasUrl] = useState("");
+  const [excalidrawAPI, setExcalidrawAPI] = useState(null);
+
+  return  (
+    <>
+      <button
+        className="custom-button"
+        onClick={async () => {
+          if (!excalidrawAPI) {
+            return
+          }
+          const elements = excalidrawAPI.getSceneElements();
+          if (!elements || !elements.length) {
+            return
+          }
+          const canvas = await exportToCanvas({
+            elements,
+            appState: {
+              ...initialData.appState,
+              exportWithDarkMode: false,
+            },
+            files: excalidrawAPI.getFiles(),
+            getDimensions: () => { return {width: 350, height: 350}}
+          });
+          const ctx = canvas.getContext("2d");
+          ctx.font = "30px Virgil";
+          ctx.strokeText("My custom text", 50, 60);
+          setCanvasUrl(canvas.toDataURL());
+        }}
+      >
+        Export to Canvas
+      </button>
+      <div className="export export-canvas">
+        <img src={canvasUrl} alt="" />
+      </div>
+      <div style={{ height: "400px" }}>
+        <Excalidraw excalidrawAPI={(api) => setExcalidrawAPI(api)}
+/>
+      </div>
+    </>
+  )
+}
+Result
+Export to Canvas
+
+exportToBlob
+Signature
+
+exportToBlob(
+  opts: ExportOpts & {
+  mimeType?: string,
+  quality?: number,
+  exportPadding?: number;
+})
+Name	Type	Default	Description
+opts	object	_	This param is passed to exportToCanvas. You can refer to exportToCanvas
+mimeType	string	image/png	Indicates the image format.
+quality	number	0.92	A value between 0 and 1 indicating the image quality. Applies only to image/jpeg/image/webp MIME types.
+exportPadding	number	10	The padding to be added on canvas.
+How to use
+
+import { exportToBlob } from "@excalidraw/excalidraw";
+
+Returns a promise which resolves with a blob. It internally uses canvas.ToBlob.
+
+exportToSvg
+Signature
+
+exportToSvg({
+  elements: ExcalidrawElement[],
+  appState: AppState,
+  exportPadding: number,
+  metadata: string,
+  files: BinaryFiles,
+});
+Name	Type	Default	Description
+elements	Excalidraw Element []		The elements to exported as svg
+appState	AppState	defaultAppState	The appState of the scene
+exportPadding	number	10	The padding to be added on canvas
+files	BinaryFiles	undefined	The files added to the scene.
+This function returns a promise which resolves to svg of the exported drawing.
+
+exportToClipboard
+Signature
+
+exportToClipboard(
+  opts: ExportOpts & {
+  mimeType?: string,
+  quality?: number;
+  type: 'png' | 'svg' |'json'
+})
+Name	Type	Default	Description
+opts			This param is same as the params passed to exportToCanvas. You can refer to exportToCanvas.
+mimeType	string	image/png	Indicates the image format, this will be used when exporting as png.
+quality	number	0.92	A value between 0 and 1 indicating the image quality. Applies only to image/jpeg / image/webp MIME types. This will be used when exporting as png.
+type	'png' | 'svg' | 'json'	_	This determines the format to which the scene data should be exported.
+How to use
+
+import { exportToClipboard } from "@excalidraw/excalidraw";
+
+Copies the scene data in the specified format (determined by type) to clipboard.
+
+Additional attributes of appState for export* APIs
+Name	Type	Default	Description
+exportBackground	boolean	true	Indicates whether background should be exported
+viewBackgroundColor	string	#fff	The default background color
+exportWithDarkMode	boolean	false	Indicates whether to export with dark mode
+exportEmbedScene	boolean	false	Indicates whether scene data should be embedded in svg/png. This will increase the image size.

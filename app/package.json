@@ -1,0 +1,17 @@
+{
+  "name": "excalihub-room-maker",
+  "version": "1.0.0",
+  "description": "Makes Rooms With Excalidraw",
+  "main": "index.js",
+  "type": "module",
+  "dependencies": {
+    "@excalidraw/excalidraw": "^0.17.6",
+    "puppeteer": "^23.11.1",
+    "ws": "^8.18.0"
+  },
+  "scripts": {
+    "test": "test"
+  },
+  "author": "",
+  "license": "ISC"
+}
