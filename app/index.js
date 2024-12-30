@@ -137,14 +137,32 @@ async function createRoomFromFile(input) {
 
 async function backupRoom(roomUrl) {
     const browser = await puppeteer.launch({
-        headless: false,
+        headless: true,
         args: ['--window-size=817,531']
     });
     const page = await browser.newPage();
     const timeout = 5000;
     page.setDefaultTimeout(timeout);
+    
+    const imageUrls = [];
+    const excludedImageUrls = [
+        'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABAAAAAQCAYAAAAf8/9hAAAAMUlEQVQ4T2NkYGAQYcAP3uCTZhw1gGGYhAGBZIA/nYDCgBDAm9BGDWAAJyRCgLaBCAAgXwixzAS0pgAAAABJRU5ErkJggg==',
+    ]
 
     await page.goto(roomUrl);
+    await page.setCacheEnabled(false);
+
+    await page.setRequestInterception(true);
+
+    page.on('request', request => {
+        if (request.url().includes('data:image') && !excludedImageUrls.includes(request.url()) ) {
+            imageUrls.push(request.url())
+        }
+        request.continue();
+    });
+    
+    await page.waitForNetworkIdle();
+
     await new Promise(resolve => setTimeout(resolve, 2000));
 
     await page.keyboard.down('Control');
@@ -183,27 +201,45 @@ async function backupRoom(roomUrl) {
                 files: {}
             };
             
-            return JSON.stringify(scene);
+            return scene;
         };
         
         return extractExcalidrawScene();
     });
+
+    sceneData.files = async () => {
+        let fileIDs = []
+        let filesObject = {}
+
+        for (let i=0; i<sceneData.elements.length; i++) {
+            if (sceneData.elements[i].type == 'image') {
+                fileIDs.push(sceneData.elements[i].fileId)
+            }
+        }
+
+        for (let i=0; i<imageUrls.length; i++) {
+            filesObject[fileIDs[i]] = {
+                "mimeType": imageUrls[i].split('data:')[1].split(';base64')[0],
+                "id": fileIDs[i],
+                "dataURL": imageUrls[i],
+                "created": Math.floor(Date.now() / 1000),
+                "lastRetrieved": Math.floor(Date.now() / 1000)
+            }
+        }
+
+        return filesObject
+    }
+
+    sceneData.files = await sceneData.files();
     
     await browser.close();
     return sceneData;
 }
 
 
+// const fileContent = await readFile('./', 'utf-8');
+// const cleanContent = '{"' + fileContent
+//     .substring(6)
+//     .replace(/^\uFEFF/, '')
+//     .replace(/\0/g, '');
 
-
-
-
-// const room = await createRoom();
-// const backup = await backupRoom('https://excalidraw.com/#room=e184e813cd5a12b3a8df,C8vJYXT69yl-OfL5OU9Iaw');
-
-// await createRoomFromFile('input.excalidraw')
-
-const fileContent = await readFile('./input.excalidraw', 'utf8')
-const roomFromFile = await createRoomFromFile(fileContent)
-
-console.log(roomFromFile)
