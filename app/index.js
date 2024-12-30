@@ -147,19 +147,16 @@ async function backupRoom(roomUrl) {
     await page.goto(roomUrl);
     await new Promise(resolve => setTimeout(resolve, 2000));
 
-    // Select all and copy
     await page.keyboard.down('Control');
     await page.keyboard.press('a');
     await page.keyboard.press('c');
     await page.keyboard.up('Control');
     
-    // Open new tab with clean excalidraw
     const newPage = await browser.newPage();
     await newPage.goto('https://excalidraw.com');
 
     await new Promise(resolve => setTimeout(resolve, 2000));
 
-    // Select all and paste
     await newPage.keyboard.down('Control');
     await newPage.keyboard.press('a');
     await newPage.keyboard.press('v');
@@ -167,48 +164,26 @@ async function backupRoom(roomUrl) {
 
     await new Promise(resolve => setTimeout(resolve, 2000));
 
-    // Execute scene extraction code
     const sceneData = await newPage.evaluate(() => {
-        // Your provided extraction code here
         const extractExcalidrawScene = () => {
-            try {
-                const excalidrawWrapper = document.querySelector('.excalidraw-wrapper');
-                const appInstance = excalidrawWrapper?.__reactFiber$?.return?.stateNode;
-                
-                let elements = [];
-                let appState = {};
-                
-                if (appInstance?.state) {
-                    elements = appInstance.state.elements || [];
-                    appState = appInstance.state.appState || {};
-                } else {
-                    const localElements = localStorage.getItem('excalidraw');
-                    const localAppState = localStorage.getItem('excalidraw/app-state');
-                    
-                    if (localElements) {
-                        elements = JSON.parse(localElements);
-                        appState = localAppState ? JSON.parse(localAppState) : {};
-                    }
-                }
-                
-                const scene = {
-                    type: "excalidraw",
-                    version: 2,
-                    source: "https://excalidraw.com",
-                    elements: elements,
-                    appState: {
-                        gridSize: appState.gridSize || null,
-                        viewBackgroundColor: appState.viewBackgroundColor || "#ffffff",
-                        gridModeEnabled: appState.gridModeEnabled || false
-                    },
-                    files: {}
-                };
-                
-                return JSON.stringify(scene);
-            } catch (error) {
-                console.error('Failed to extract scene:', error);
-                return null;
+            const localElements = localStorage.getItem('excalidraw');
+            const localAppState = localStorage.getItem('excalidraw-state');
+            
+            if (localElements) {
+                elements = JSON.parse(localElements);
+                appState = localAppState ? JSON.parse(localAppState) : {};
             }
+
+            const scene = {
+                type: "excalidraw",
+                version: 2,
+                source: "https://excalidraw.com",
+                elements: elements,
+                appState: appState,
+                files: {}
+            };
+            
+            return JSON.stringify(scene);
         };
         
         return extractExcalidrawScene();
