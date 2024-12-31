@@ -2,69 +2,6 @@ import puppeteer from "puppeteer";
 import { readFile } from 'fs/promises';
 import { writeFile } from 'fs/promises';
 
-// async function createRoom() {
-//     const browser = await puppeteer.launch({
-//         headless: false,
-//         args: ['--window-size=817,531']
-//     });
-//     const page = await browser.newPage();
-//     const timeout = 5000;
-//     page.setDefaultTimeout(timeout);
-
-//     await page.setViewport({
-//         width: 817,
-//         height: 531
-//     });
-
-//     const targetPage = page;
-//     const promises = [];
-//     const startWaitingForEvents = () => {
-//         promises.push(targetPage.waitForNavigation());
-//     };
-//     startWaitingForEvents();
-
-//     await targetPage.goto('https://excalidraw.com/');
-//     await Promise.all(promises);
-
-//     await new Promise(resolve => setTimeout(resolve, 1000));
-
-//     const button = await targetPage.waitForSelector('div.layer-ui__wrapper__top-right > div svg');
-//     await button.click({
-//         offset: {
-//             x: 4.87493896484375,
-//             y: 18.01041603088379,
-//         }
-//     });
-
-//     await Promise.race([
-//         targetPage.waitForSelector('::-p-aria(Start session)'),
-//         targetPage.waitForSelector('body > div.excalidraw div:nth-of-type(3) > button'),
-//         targetPage.waitForSelector('::-p-xpath(/html/body/div[2]/div/div[2]/div/div/div/div[3]/button)'),
-//     ]).then(async (element) => {
-//         await element.click({
-//             offset: {
-//                 x: 128.32290649414062,
-//                 y: 9.315963745117188,
-//             }
-//         });
-//     }).catch(error => {
-//         console.error('Failed to find or click the button:', error);
-//         throw error;
-//     });
-
-//     await new Promise(resolve => setTimeout(resolve, 1000));
-
-//     const roomUrl = await targetPage.evaluate(() => {
-//         const input = document.querySelector('input[value^="https://excalidraw.com/#room="]');
-//         return input.value;
-//     });
-
-//     await browser.close();
-
-//     return roomUrl
-// }
-
-
 /* Used to create either a fresh live room, duplicate a room, make a room from a .excalidraw file, make a room from a read-only link */
 async function createRoom(input) { // Input can be #json URL or .excalidraw file. If empty it'll create new empty room
     const browser = await puppeteer.launch({
@@ -451,4 +388,4 @@ async function imageTest() {
  * - make deleting room thing
  * - look into exporting excalidraw generated images of the scene & utilizing the options maybe
  * - optimize by checking what overall operations can be truncated to single functions (i.e. snapshotting)
-*/
+ */
