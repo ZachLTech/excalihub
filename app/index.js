@@ -385,6 +385,7 @@ async function imageTest() {
 
 /* TODO
  * - look into file exporting issue (produces duplicate content)
+ * - make some sort of system where if it couldn't backup with a read-only URL, then it resorts to manually backing up the file.
  * - make deleting room thing
  * - look into exporting excalidraw generated images of the scene & utilizing the options maybe
  * - optimize by checking what overall operations can be truncated to single functions (i.e. snapshotting)
