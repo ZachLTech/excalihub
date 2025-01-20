@@ -355,7 +355,6 @@ async function getRoomSnapshotImage(roomUrl) {
     return `data:image/png;base64,${screenshot}`;
 }
 
-
 /* UNIT TESTS (kinda) */
 
 // File read helper
@@ -401,7 +400,7 @@ async function imageTest() {
  * X (That can only happen if the room is too large and will be handled in the future) - make some sort of system where if it couldn't backup with a read-only URL, then it resorts to manually backing up the file.
  * X (Only archiving because you can't technically delete a room) - make deleting room thing
  * L (Later since the user can technically just do it within the iframe) - look into exporting excalidraw generated images of the scene & utilizing the options maybe
- * - optimize by checking what overall operations can be truncated to single functions (i.e. snapshotting)
+ * L (Later since highseas almost a wrap fr) optimize by checking what overall operations can be truncated to single functions (i.e. snapshotting)
  * 
  * After Highseas:
  * - Look into templating

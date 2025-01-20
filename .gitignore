@@ -4,3 +4,4 @@ node_modules
 output-*
 old-*
 test-*
+old-output/
