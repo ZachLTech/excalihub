@@ -2,8 +2,25 @@ import puppeteer from "puppeteer";
 import { readFile } from 'fs/promises';
 import { writeFile } from 'fs/promises';
 
+function generateRandomBase64(length) {
+    const array = new Uint8Array(length);
+    crypto.getRandomValues(array);
+    return btoa(String.fromCharCode.apply(null, array))
+        .replace(/\+/g, '-')
+        .replace(/\//g, '_')
+        .replace(/=/g, '');
+}
+
 /* Used to create either a fresh live room, duplicate a room, make a room from a .excalidraw file, make a room from a read-only link */
 async function createRoom(input) { // Input can be #json URL or .excalidraw file. If empty it'll create new empty room
+    
+    if (!input) {
+        const roomId = generateRandomBase64(20);
+        const encryptionKey = generateRandomBase64(24).slice(0, 22);
+        
+        return `https://excalidraw.com/#room=${roomId},${encryptionKey}`;
+    }
+    
     const browser = await puppeteer.launch({
         headless: false,
         args: ['--window-size=817,531']
@@ -17,36 +34,31 @@ async function createRoom(input) { // Input can be #json URL or .excalidraw file
         height: 531
     });
 
-    if (input) {
-        if (input.includes('excalidraw.com/#json=')) {
-            await page.goto(input);
-            await new Promise(resolve => setTimeout(resolve, 2000));
-        } else {
-            await page.goto('https://excalidraw.com');
-    
-            const context = browser.defaultBrowserContext();
-            await context.overridePermissions('https://excalidraw.com', [
-                "clipboard-read",
-                "clipboard-write",
-                "clipboard-sanitized-write",
-            ]);
-    
-            await new Promise(resolve => setTimeout(resolve, 2000));
-    
-            await page.evaluate(async (input) => {
-                await navigator.clipboard.writeText(input);
-            }, input);
-    
-            await page.keyboard.down('Control');
-            await page.keyboard.press('a');
-            await page.keyboard.press('v');
-            await page.keyboard.up('Control');
-    
-            await new Promise(resolve => setTimeout(resolve, 500));
-        }
+    if (input.includes('excalidraw.com/#json=')) {
+        await page.goto(input);
+        await new Promise(resolve => setTimeout(resolve, 2000));
     } else {
-        page.goto('https://excalidraw.com/')
-        await new Promise(resolve => setTimeout(resolve, 1000));
+        await page.goto('https://excalidraw.com');
+
+        const context = browser.defaultBrowserContext();
+        await context.overridePermissions('https://excalidraw.com', [
+            "clipboard-read",
+            "clipboard-write",
+            "clipboard-sanitized-write",
+        ]);
+
+        await new Promise(resolve => setTimeout(resolve, 2000));
+
+        await page.evaluate(async (input) => {
+            await navigator.clipboard.writeText(input);
+        }, input);
+
+        await page.keyboard.down('Control');
+        await page.keyboard.press('a');
+        await page.keyboard.press('v');
+        await page.keyboard.up('Control');
+
+        await new Promise(resolve => setTimeout(resolve, 500));
     }
 
     const button = await page.waitForSelector('div.layer-ui__wrapper__top-right > div svg');
@@ -383,10 +395,16 @@ async function imageTest() {
     console.log(`Image Created and Exported to 'output-image'!`)
 }
 
+
 /* TODO
- * - look into file exporting issue (produces duplicate content)
- * - make some sort of system where if it couldn't backup with a read-only URL, then it resorts to manually backing up the file.
- * - make deleting room thing
- * - look into exporting excalidraw generated images of the scene & utilizing the options maybe
+ * V (fixed itself I guess) - look into file exporting issue (produces duplicate content)
+ * X (That can only happen if the room is too large and will be handled in the future) - make some sort of system where if it couldn't backup with a read-only URL, then it resorts to manually backing up the file.
+ * X (Only archiving because you can't technically delete a room) - make deleting room thing
+ * L (Later since the user can technically just do it within the iframe) - look into exporting excalidraw generated images of the scene & utilizing the options maybe
  * - optimize by checking what overall operations can be truncated to single functions (i.e. snapshotting)
+ * 
+ * After Highseas:
+ * - Look into templating
+ * - Look into room paginating
+ * - Look into alternative size limit solutions
  */
