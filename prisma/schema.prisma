@@ -23,6 +23,7 @@ model Room {
   id            String      @id @default(cuid())
   name          String
   description   String?
+  thumbnail String?
   roomType      RoomType   @default(NORMAL)
   status        RoomStatus @default(LIVE)
   createdAt     DateTime   @default(now())
