@@ -1,55 +1,60 @@
-import { hash } from 'bcrypt'
+import { hash } from "bcrypt";
 
 export default defineEventHandler(async (event) => {
-    try {
-        const body = await readBody(event)
-        
-        if (!body.email || !body.password) {
-            throw createError({
-                statusCode: 400,
-                message: 'Email and password are required'
-            })
-        }
+	try {
+		const body = await readBody(event);
+		let allowSignups = useRuntimeConfig().public.allowSignups
+		let admin = false;
 
-        // Check if user exists
-        const exists = await event.context.prisma.user.findUnique({
-            where: { email: body.email }
-        })
+		if (allowSignups != 'true') {
+			throw createError({
+				statusCode: 403,
+				message: "Signups are currently disabled",
+			});
+		}
 
-        if (exists) {
-            throw createError({
-                statusCode: 400,
-                message: 'User already exists'
-            })
-        }
+		if (!body.email || !body.password) {
+			throw createError({
+			statusCode: 400,
+			message: "Email and password are required",
+			});
+		}
 
-        // Create new user
-        const hashedPassword = await hash(body.password, 10)
-        const user = await event.context.prisma.user.create({
-            data: {
-                email: body.email,
-                name: body.username,
-                password: hashedPassword,
-                account: {
-                    create: {
-                        type: 'credentials',
-                        provider: 'credentials',
-                        providerAccountId: body.email,
-                        subscribed: false
-                    }
-                }
-            }
-        })
+		const exists = await event.context.prisma.user.findUnique({
+			where: { email: body.email },
+		});
 
-        return {
-            id: user.id,
-            email: user.email,
-            name: user.name
-        }
-    } catch (error: any) {
-        throw createError({
-            statusCode: error.statusCode || 500,
-            message: error.message || 'Internal server error'
-        })
-    }
-})
+		if (exists) {
+			throw createError({
+				statusCode: 400,
+				message: "User already exists",
+			});
+		}
+
+		const usrCount = await event.context.prisma.user.count();
+		if (usrCount == 0) {
+			admin = true;
+		}
+
+		const hashedPassword = await hash(body.password, 10);
+		const user = await event.context.prisma.user.create({
+			data: {
+				email: body.email,
+				name: body.username,
+				password: hashedPassword,
+				admin: admin
+			},
+		});
+
+		return {
+			id: user.id,
+			email: user.email,
+			name: user.name,
+		};
+	} catch (error: any) {
+		throw createError({
+			statusCode: error.statusCode || 500,
+			message: error.message || "Internal server error",
+		});
+	}
+});

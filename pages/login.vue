@@ -1,12 +1,23 @@
 <script setup lang="ts">
-    const { status } = useAuth()
+// All initial logic declarations
+const { status } = useAuth();
 
-    if (status.value === 'authenticated') {
-        navigateTo('/');
-    }
+useSeoMeta({
+  title: 'Excalihub - Login',
+  ogTitle: 'Excalihub - Login',
+  description: 'Login to Excalihub',
+  ogDescription: 'Login to Excalihub',
+})
+
+if (status.value === "authenticated") {
+	navigateTo("/");
+}
 </script>
 
 <template>
-        <NuxtLink to="/">Home</NuxtLink>
-        <loginForm />
+	<appNav />
+
+	<div class="px-4 sm:mx-0">
+		<loginForm class="mt-[15vh]" />
+	</div>
 </template>

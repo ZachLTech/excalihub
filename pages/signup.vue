@@ -1,12 +1,26 @@
 <script setup lang="ts">
-    const { status } = useAuth()
+// All initial logic declarations
+const { status } = useAuth();
+let allowSignups = useRuntimeConfig().public.allowSignups
 
-    if (status.value === 'authenticated') {
-        navigateTo('/');
-    }
+useSeoMeta({
+  title: 'Excalihub - Signup',
+  ogTitle: 'Excalihub - Signup',
+  description: 'Signup for Excalihub',
+  ogDescription: 'Signup for Excalihub',
+})
+
+if (status.value === "authenticated") {
+	navigateTo("/");
+} else if (allowSignups != "true") {
+	navigateTo("/login")
+}
 </script>
 
 <template>
-        <NuxtLink to="/">Home</NuxtLink>
-        <signupForm />
+	<appNav />
+
+	<div class="px-4 sm:mx-0">
+		<signupForm class="mt-[15vh]" />
+	</div>
 </template>
