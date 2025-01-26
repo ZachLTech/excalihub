@@ -1,6 +1,5 @@
 import { getServerSession } from "#auth";
 import { Room } from "@prisma/client";
-import { hash } from "bcrypt";
 
 /* 
     Body Structure:
@@ -8,6 +7,7 @@ import { hash } from "bcrypt";
         roomID: '',
         name: '',
         description: '',
+        thumbnail: '',
         roomType: '',
         status: '',
         excalidrawUrl: '',
@@ -16,7 +16,7 @@ import { hash } from "bcrypt";
 */
 
 type RoomUpdateInput = Partial<
-    Pick<Room, "name" | "description" | "roomType" | "status" | "excalidrawUrl" | "readOnlyUrl">
+    Pick<Room, "name" | "description" | "thumbnail" | "roomType" | "status" | "excalidrawUrl" | "readOnlyUrl">
 >;
 
 export default eventHandler(async (event) => {
@@ -78,24 +78,39 @@ export default eventHandler(async (event) => {
         updateData.description = body.description;
     }
 
+    if (body.thumbnail && body.thumbnail != room.thumbnail) {
+        if (body.thumbnail.length >= 15 * 1024 * 1024) {
+            throw createError({
+                statusCode: 401,
+                statusMessage:
+                    "The thumbnail image can't be larger than 15MB",
+            });
+        }
+        updateData.thumbnail = body.thumbnail;
+    }
+
     if (body.roomType && body.roomType != room.roomType && (body.roomType == 'NORMAL' || body.roomType == 'TEMPLATE' || body.roomType == 'TEMPORARY')) {
         updateData.roomType = body.roomType;
     }
 
-    if (body.roomType && body.roomType != room.roomType && (body.roomType == 'LIVE' || body.roomType == 'LOCAL' || body.roomType == 'TEMPORARY')) {
-        updateData.roomType = body.roomType;
+    if (body.status && body.status != room.status && (body.status == 'LIVE' || body.status == 'LOCAL' || body.status == 'ARCHIVED')) {
+        updateData.status = body.status;
     }
 
-    if (body.website && body.website != user?.website) {
-        updateData.website = body.website;
+    if (body.excalidrawUrl && body.excalidrawUrl != room.excalidrawUrl) {
+        updateData.excalidrawUrl = body.excalidrawUrl;
     }
 
-    const updatedUser = await event.context.prisma.user.update({
+    if (body.readOnlyUrl && body.readOnlyUrl != room.readOnlyUrl) {
+        updateData.readOnlyUrl = body.readOnlyUrl;
+    }
+
+    const updatedRoom = await event.context.prisma.room.update({
         where: {
-            email: userEmail as string | undefined,
+            id: room.id,
         },
         data: updateData,
     });
 
-    return updatedUser;
+    return updatedRoom;
 });

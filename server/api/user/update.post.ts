@@ -7,14 +7,12 @@ import { hash } from "bcrypt";
     {
         name: '',
         email: '',
-        password: '',
-        image: '',
-        website: ''
+        password: ''
     }
 */
 
 type UserUpdateInput = Partial<
-	Pick<User, "name" | "email" | "password" | "image" | "website">
+	Pick<User, "name" | "email" | "password" >
 >;
 
 export default eventHandler(async (event) => {
@@ -60,14 +58,6 @@ export default eventHandler(async (event) => {
 				updateData.password = hashedPassword;
 			}
 		}
-	}
-
-	if (body.image && body.image != user?.image) {
-		updateData.image = body.image;
-	}
-
-	if (body.website && body.website != user?.website) {
-		updateData.website = body.website;
 	}
 
 	const updatedUser = await event.context.prisma.user.update({
