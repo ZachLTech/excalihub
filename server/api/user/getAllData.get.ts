@@ -22,7 +22,12 @@ export default eventHandler(async (event) => {
 			name: true,
 			email: true,
 			createdAt: true,
-			updatedAt: true
+			updatedAt: true,
+			rooms: {
+				select: {
+					id: true
+				}
+			}
 		},
 	});
 
