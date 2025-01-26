@@ -13,7 +13,6 @@ function generateRandomBase64(length) {
 
 /* Used to create either a fresh live room, duplicate a room, make a room from a .excalidraw file, make a room from a read-only link */
 async function createRoom(input) { // Input can be #json URL or .excalidraw file. If empty it'll create new empty room
-    
     if (!input) {
         const roomId = generateRandomBase64(20);
         const encryptionKey = generateRandomBase64(24).slice(0, 22);
@@ -21,9 +20,9 @@ async function createRoom(input) { // Input can be #json URL or .excalidraw file
         return `https://excalidraw.com/#room=${roomId},${encryptionKey}`;
     }
     
-    const browser = await puppeteer.launch({
-        headless: false,
-        args: ['--window-size=817,531']
+    const browser = await puppeteer.connect({ 
+        browserWSEndpoint: 'wss://browserless.zachl.tech',
+        args: ['--window-size=817,531'],
     });
     const page = await browser.newPage();
     const timeout = 5000;
@@ -91,6 +90,8 @@ async function createRoom(input) { // Input can be #json URL or .excalidraw file
         const input = document.querySelector('input[value^="https://excalidraw.com/#room="]');
         return input.value;
     });
+
+    await new Promise(resolve => setTimeout(resolve, 1000));
 
     await browser.close();
 
@@ -393,7 +394,6 @@ async function imageTest() {
 
     console.log(`Image Created and Exported to 'output-image'!`)
 }
-
 
 /* TODO
  * V (fixed itself I guess) - look into file exporting issue (produces duplicate content)
