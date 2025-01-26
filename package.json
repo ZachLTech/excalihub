@@ -25,6 +25,7 @@
     "bcrypt": "^5.1.1",
     "next-auth": "~4.21.1",
     "nuxt": "^3.14.1592",
+    "puppeteer": "^24.1.1",
     "vue": "latest",
     "vue-router": "latest"
   },
