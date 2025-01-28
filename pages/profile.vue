@@ -41,8 +41,8 @@ onMounted(async () => {
 
 	
 	useSeoMeta({
-		title: `${platformTitle} - Your Profile` || 'OpenQuill - Profile',
-		ogTitle: `${platformTitle} - Your Profile` || 'OpenQuill - Profile',
+		title: `${platformTitle} - Your Profile` || 'Excalihub - Profile',
+		ogTitle: `${platformTitle} - Your Profile` || 'Excalihub - Profile',
 		description: `Profile to ${platformTitle}`,
 		ogDescription: `Profile to ${platformTitle}`,
 	})

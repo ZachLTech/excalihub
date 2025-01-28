@@ -8,6 +8,7 @@ const archivedRooms = ref([]);
 const showNewRoomModal = ref(false);
 const showImportRoomModal = ref(false);
 const showRoomDetailsModal = ref(false);
+const showArchived = ref(false)
 const selectedRoom = ref(null);
 const newRoom = ref({
 	name: "",
@@ -28,6 +29,13 @@ const updateRoomInfo = ref({
 if (status.value === "unauthenticated") {
 	navigateTo("/login");
 }
+
+useSeoMeta({
+  title: 'Excalihub - Your Hub',
+  ogTitle: 'Excalihub - Your Hub',
+  description: 'Hub with all your Excalidraw boards.',
+  ogDescription: 'Hub with all your Excalidraw boards.',
+})
 
 onMounted(async () => {
 	loading.value = true;
@@ -339,13 +347,19 @@ async function fetchRooms() {
 		</div>
 
 		<div v-if="archivedRooms.length > 0">
-			<h2
-				class="text-xl font-semibold text-gray-300 w-full pb-4 mb-4 border-b-2 border-b-secondary border-opacity-15"
-			>
-				Archived Rooms
-			</h2>
+			<div class="flex items-center gap-3 w-full pb-4 mb-4 border-b-2 border-b-secondary border-opacity-15">
+				<h2
+					class="text-xl font-semibold text-gray-300"
+				>
+					Archived Rooms
+				</h2>
+				<button class="text-text underline text-sm" @click="showArchived = !showArchived">
+					{{ showArchived? "Hide" : "Show" }}
+				</button>
+			</div>
 			<div
 				class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 py-4"
+				v-if="showArchived"
 			>
 				<roomCard
 					v-for="room in archivedRooms"

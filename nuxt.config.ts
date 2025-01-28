@@ -2,7 +2,7 @@
 export default defineNuxtConfig({
   compatibilityDate: '2024-11-01',
   devtools: { enabled: false },
-  modules: ['@sidebase/nuxt-auth'],
+  modules: ['@sidebase/nuxt-auth','@vueuse/motion/nuxt'],
   css: ['~/assets/css/main.css'],
   postcss: {
     plugins: {
