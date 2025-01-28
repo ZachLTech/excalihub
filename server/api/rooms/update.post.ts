@@ -48,13 +48,7 @@ export default eventHandler(async (event) => {
         }
     })
 
-    if (user && user.frozen) {
-        throw createError({
-            statusCode: 401,
-            statusMessage:
-                "You are not authorized to call this API. You account is frozen.",
-        });
-    } else if (!room) {
+    if (!room) {
         throw createError({
             statusCode: 401,
             statusMessage:
@@ -65,6 +59,12 @@ export default eventHandler(async (event) => {
             statusCode: 401,
             statusMessage:
                 "You don't own this room.",
+        });
+    } else if (!user) {
+        throw createError({
+            statusCode: 401,
+            statusMessage:
+                "The provided user does not exist.",
         });
     }
 

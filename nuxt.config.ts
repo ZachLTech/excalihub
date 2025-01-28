@@ -12,7 +12,9 @@ export default defineNuxtConfig({
   },
 
   runtimeConfig: {
+    authSecret: process.env.AUTH_SECRET,
     public: {
+      platformTitle: process.env.PLATFORM_TITLE,
       allowSignups: process.env.ALLOW_SIGNUPS,
       baseURL: process.env.BASE_URL || `http://localhost:${process.env.PORT}`,
     }

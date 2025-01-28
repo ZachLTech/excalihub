@@ -54,9 +54,9 @@ onMounted(async () => {
 		<div class="max-w-6xl mx-auto flex justify-between items-center">
 			<NuxtLink
 				to="/"
-				class="text-xl font-bold text-text hover:text-opacity-60 transition-colors"
+				class="text-xl font-bold text-text hover:text-primary transition-colors"
 			>
-				{{ platformTitle }}
+				Excalihub
 			</NuxtLink>
 
 			<div class="flex items-center gap-6">
@@ -72,6 +72,14 @@ onMounted(async () => {
 						} hover:text-primary transition-colors`"
 					>
 						My Blog
+					</NuxtLink>
+					<NuxtLink
+						to="/hub"
+						:class="`text-${
+							isActive('/hub') ? 'primary' : 'text'
+						} hover:text-primary transition-colors`"
+					>
+						Hub
 					</NuxtLink>
 					<NuxtLink
 						to="/profile"

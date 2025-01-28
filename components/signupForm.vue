@@ -68,7 +68,7 @@ async function handleLogin() {
 			error.value = "Invalid credentials";
 			console.error("Login failed:", result.error);
 		} else {
-			navigateTo(`/profile`);
+			navigateTo(`/hub`);
 		}
 	} catch (e: any) {
 		error.value = e?.message || "Login failed";

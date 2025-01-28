@@ -11,7 +11,7 @@ useSeoMeta({
 })
 
 if (status.value === "authenticated") {
-	navigateTo("/");
+	navigateTo("/hub");
 } else if (allowSignups != "true") {
 	navigateTo("/login")
 }

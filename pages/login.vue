@@ -10,7 +10,7 @@ useSeoMeta({
 })
 
 if (status.value === "authenticated") {
-	navigateTo("/");
+	navigateTo("/hub");
 }
 </script>
 
