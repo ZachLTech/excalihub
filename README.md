@@ -2,7 +2,7 @@
 
 # 🗡 Excalihub ️🎨
 
-<img src="./excalihub.svg" alt="Excalihub Banner" width="600"/>
+<img src="./excalihub.svg" alt="Excalihub Banner" width="450"/>
 
 [![GitHub Stars](https://img.shields.io/github/stars/ZachLTech/excalihub?style=flat)](https://github.com/ZachLTech/excalihub/stargazers)
 [![Contributions](https://img.shields.io/badge/contributions-welcome-brightgreen.svg)](CONTRIBUTING.md)
