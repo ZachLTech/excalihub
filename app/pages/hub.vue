@@ -243,7 +243,7 @@ async function fetchRooms() {
 
 	<div
 		v-if="loading"
-		class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+		class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-[100]"
 	>
 		<div class="relative w-20 h-20">
 			<div
