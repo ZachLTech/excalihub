@@ -21,7 +21,7 @@ useSeoMeta({
             <featureCard :title="'Backup (Coming Soon)'" :description="'Automatically backup and save your excalidraw room state as snapshots'" />
             <featureCard :title="'Categorize (Coming Soon)'" :description="'Enhance your whiteboard organization by categorizing and marking your rooms to have special functionality'" />
             <featureCard :title="'Tabulate (Coming Soon)'" :description="'Expand your simple whiteboards to have multiple tabs for larger projects and more efficient organization'" />
-            <featureCard :title="'Self Host (Coming Soon)'" :description="'Host your very own instance of Excalihub and enjoy all it\'s benefits and more while knowing your data is truly yours.'" />
+            <featureCard :title="'Self Host'" :description="'Host your very own instance of Excalihub and enjoy all it\'s benefits and more while knowing your data is truly yours.'" />
         </div>
     </section>
 </template>
