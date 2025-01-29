@@ -202,6 +202,7 @@ async function deleteRoom(roomId) {
 		});
 
 		rooms.value = rooms.value.filter((r) => r.id !== roomId);
+		archivedRooms.value = archivedRooms.value.filter((r) => r.id !== roomId);
 		showRoomDetailsModal.value = false;
 	} catch (e) {
 		error.value =

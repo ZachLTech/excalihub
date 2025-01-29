@@ -1,3 +1,12 @@
+<script setup>
+useSeoMeta({
+  title: 'Excalihub - Home',
+  ogTitle: 'Excalihub - Home',
+  description: 'Excalihub - Your centralized hub for creating, managing, organizing, and enhancing Excalidraw whiteboards',
+  ogDescription: 'Excalihub - Your centralized hub for creating, managing, organizing, and enhancing Excalidraw whiteboards',
+})
+</script>
+
 <template>
     <appNav />
 
